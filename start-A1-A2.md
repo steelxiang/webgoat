@@ -90,3 +90,16 @@ nHWEXZxBdBnimda
 ![Alt xor](img/14.png)
 + 1-4,这关需要破解哈希加密，可能是MD5也可能是sha1,https://www.cmd5.org/ 是一个专门破解哈希的网站，直接就能破解。得到答案secret和password
 ![Alt cmd5](img/15.png)
++ 1-6,这关涉及RSA密钥，给出了一个私钥需要算出公钥的modulus还有签名，具体算法可以网上查，提示上面也有，具体过程：  
+将给的私钥保存为test.key,生成公钥
+openssl rsa -in test.key -pubout > test.pub    
+生成modulus  
+openssl rsa -in test.pub -pubin -modulus -noout
+然后用生成的modulus生成signature并用base64编码    
+ echo -n "00AE89..." | openssl dgst -sign test.key -sha256 |base64  
++ 1-8，这关是需要找到一个密钥，解开题目的一段密文，这个密钥是放在一个docker容器里，这里我们要运行这个容器，然后到/root/下面找到密钥文件。  
+运行容易：  
+docker run -d webgoat/assignments:findthesecret  
+root身份进入容器：
+ docker exec -it --user=root 34580 /bin/bash
+ 
